@@ -21,7 +21,7 @@ class LoginWindow:
         self.master.geometry(LOGIN_WINDOW_SIZE)
         self.master.configure(bg=my_config.BACKGROUND)
         self.frame = tk.Frame(self.master, bg=my_config.BACKGROUND, bd=15)
-        self.frame2 = tk.Frame(self.master, bg=my_config.BACKGROUND, bd=15)
+        self.welcome_frame = tk.Frame(self.master, bg=my_config.BACKGROUND, bd=15)
 
         # it contains error messages, for example not all entry are filled.
         self.error_label = tk.Label()
@@ -38,12 +38,12 @@ class LoginWindow:
         if self.frame:
             self.frame.destroy()
         self.frame = tk.Frame(self.master, bg=my_config.BACKGROUND, bd=15)
-        if self.frame2:
-            self.frame2.destroy()
-        self.frame2 = tk.Frame(self.master, bg=my_config.BACKGROUND, bd=15)
+        if self.welcome_frame:
+            self.welcome_frame.destroy()
+        self.welcome_frame = tk.Frame(self.master, bg=my_config.BACKGROUND, bd=15)
 
         # login, password label and entry
-        page_title = tk.Label(self.frame2, text="Welcome to Our Coffee Shop!",  bg=my_config.BACKGROUND, font=('Helvetica',30,'bold'), fg='orange')
+        page_title = tk.Label(self.welcome_frame, text="Welcome to Our Coffee Shop!",  bg=my_config.BACKGROUND, font=('Helvetica',30,'bold'), fg='orange')
         page_title.grid(row=0,column=1,pady=30)
         
         login_label = tk.Label(self.frame, bg=my_config.BACKGROUND, text='Username:')
@@ -62,7 +62,7 @@ class LoginWindow:
         create_button = tk.Button(self.frame, text='Create account',
                                   bg=my_config.FOREGROUND, command=self.create_account, width=16)
         create_button.grid(row=4, column=1)
-        self.frame2.pack()
+        self.welcome_frame.pack()
         self.frame.pack()
 
     def login(self):
@@ -94,7 +94,7 @@ class LoginWindow:
 
     def create_account(self):
         """Initializes window for creating new accounts."""
-        self.frame2.destroy()
+        self.welcome_frame.destroy()
         self.frame.destroy()
         self.frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
         self.frame.pack()
@@ -134,7 +134,7 @@ class LoginWindow:
     def create_account_db(self):
         """Create new account if all required entries are filled."""
         # deleting missing label from last add_order call, if it exists
-        self.frame2.destroy()
+        self.welcome_frame.destroy()
         if self.error_label:
             self.error_label.destroy()
 
@@ -183,13 +183,14 @@ class LoginWindow:
 
     def admin_app(self):
         """Initializing Admin window."""
-        self.frame2.destroy()
+        self.welcome_frame.destroy()
         self.frame.destroy()
         application = admin_window.CustomersMenu(self.master)
         application.initialize_menu()
 
     def customer_app(self):
         """Initializing Customer window."""
+        self.welcome_frmae.destroy()
         self.frame.destroy()
         application = customer_window.CustomerApp(self.master)
         application.initialize_main_buttons()
