@@ -65,7 +65,7 @@ class CustomerApp:
         orders_button = tk.Button(self.frame, text='My Orders', bg=my_config.FOREGROUND,
                                   command=self.my_orders, width=16)
         orders_button.grid(row=2, column=0, pady=(0, 3))
-        logoff_button = tk.Button(self.frame, text='Logoff', bg=my_config.FOREGROUND,
+        logoff_button = tk.Button(self.frame, text='Log off', bg=my_config.FOREGROUND,
                                   command=self.log_off, width=16)
         logoff_button.grid(row=3, column=0, pady=(0, 3))
         self.frame.pack()
@@ -80,7 +80,7 @@ class CustomerApp:
         self.function_frame2 = tk.Frame(self.master, bg=my_config.BACKGROUND)
         self.function_frame2.pack()
 
-        list_label = tk.Label(self.function_frame, text='list of products',
+        list_label = tk.Label(self.function_frame, text='Products',
                               width=100, bg=my_config.BACKGROUND)
         list_label.grid(row=0, column=0, pady=(10, 0))
 
@@ -123,7 +123,7 @@ class CustomerApp:
         place_order_button = tk.Button(self.function_frame2, text='Place order',
                                        bg=my_config.FOREGROUND, command=self.place_order, width=16)
         place_order_button.grid(row=4, column=0)
-        details_button = tk.Button(self.function_frame2, text='details',
+        details_button = tk.Button(self.function_frame2, text='Details',
                                    bg=my_config.FOREGROUND, command=self.product_details, width=16)
         details_button.grid(row=4, column=1, )
 
@@ -134,24 +134,24 @@ class CustomerApp:
 
         # checking if all required entries are filled properly
         if not self.id_product_entry.get():
-            self.error_message("'id product' missing")
+            self.error_message("Product ID missing.")
         elif not my_config.is_integer(self.quantity_entry.get()) or int(self.quantity_entry.get()) < 1:
-            self.error_message("'quantity' Must be an positive integer")
+            self.error_message("Quantity must be a positive integer.")
         elif not self.location_entry.get():
-            self.error_message("'location' missing")
+            self.error_message("Location missing.")
 
         # checking if customer and product exists
         elif not db.is_customer_id_exist(my_config.MY_ID) or not db.is_product_id_exists(
                 self.id_product_entry.get()):
-            self.error_message("product or customer id not Exists")
+            self.error_message("Invalid Product ID or Customer ID.")
 
         # function itself check if there is enough products, and count total price (quantity*price)
         elif db.add_order(my_config.MY_ID, self.id_product_entry.get(), self.quantity_entry.get(),
                           self.location_entry.get()):
-            messagebox.showinfo("Mendiona bytes", 'successfully added.')
+            messagebox.showinfo("Coffee Shop", 'Successfully added.')
             self.list_products()
         else:
-            self.error_message("not enough products in stock.")
+            self.error_message("Product out of stock.")
 
     def product_details(self):
         """show details of selected product."""
@@ -161,7 +161,7 @@ class CustomerApp:
             self.function_frame3.destroy()
 
         if not self.id_product_entry.get():
-            self.error_message("select product.")
+            self.error_message("Select product.")
 
         elif db.is_product_id_exists(self.id_product_entry.get()):
 
@@ -174,7 +174,7 @@ class CustomerApp:
                                           bg=my_config.BACKGROUND, width=300)
             self.error_label.grid(row=5, column=0)
         else:
-            self.error_message("Product not exist.")
+            self.error_message("Invalid product.")
 
     def product_selection(self, event):
         """Adds id of selected product to designated entry."""
@@ -228,7 +228,7 @@ class CustomerApp:
         self.function_frame.pack()
 
         # creating listbox for customers
-        list_label = tk.Label(self.function_frame, text='my orders:', width=100, bg=my_config.BACKGROUND)
+        list_label = tk.Label(self.function_frame, text='My Orders:', width=100, bg=my_config.BACKGROUND)
         list_label.grid(row=0, column=0, pady=(10, 0))
 
         # creating treeview for customers
@@ -264,7 +264,7 @@ class CustomerApp:
         self.error_label.grid(row=3, column=1)
 
     def log_off(self):
-        """Returns User to logging window."""
+        """Returns User to log-in window."""
         if self.frame:
             self.frame.destroy()
         if self.function_frame:
@@ -294,16 +294,22 @@ class AccountEdit:
         self.frame.pack()
 
         # Create text box labels
-        new_password_label = tk.Label(self.frame, text='new password(opt):', bg=my_config.BACKGROUND)
+        new_password_label = tk.Label(self.frame, text='New Password (optional):', bg=my_config.BACKGROUND)
         new_password_label.grid(row=1, column=0, pady=(10, 0), sticky=tk.E)
-        password_label = tk.Label(self.frame, text='password:', bg=my_config.BACKGROUND)
+        password_label = tk.Label(self.frame, text='Password:', bg=my_config.BACKGROUND)
         password_label.grid(row=2, column=0, sticky=tk.E)
-        name_label = tk.Label(self.frame, text='name:', bg=my_config.BACKGROUND)
+        name_label = tk.Label(self.frame, text='Name:', bg=my_config.BACKGROUND)
         name_label.grid(row=3, column=0, pady=(4, 0), sticky=tk.E)
-        phone_label = tk.Label(self.frame, text='phone:', bg=my_config.BACKGROUND)
+        phone_label = tk.Label(self.frame, text='Phone:', bg=my_config.BACKGROUND)
         phone_label.grid(row=4, column=0, pady=(4, 0), sticky=tk.E)
-        email_label = tk.Label(self.frame, text='email:', bg=my_config.BACKGROUND)
+        email_label = tk.Label(self.frame, text='Email:', bg=my_config.BACKGROUND)
         email_label.grid(row=5, column=0, pady=(4, 0), sticky=tk.E)
+        cc_label = tk.Label(self.frame, text='Credit Card Number:', bg=my_config.BACKGROUND)
+        cc_label.grid(row=6, column=0, pady=(4, 0), sticky=tk.E)
+        exp_date_label = tk.Label(self.frame, text='Expiration Date:', bg=my_config.BACKGROUND)
+        exp_date_label.grid(row=7, column=0, pady=(4, 0), sticky=tk.E)
+        ccv_label = tk.Label(self.frame, text='CCV:', bg=my_config.BACKGROUND)
+        ccv_label.grid(row=8, column=0, pady=(4, 0), sticky=tk.E)
 
         # Create Entry box
         self.new_password_entry = tk.Entry(self.frame, width=22, show='*', bg=my_config.FOREGROUND)
@@ -316,9 +322,15 @@ class AccountEdit:
         self.phone_entry.grid(row=4, column=1)
         self.email_entry = tk.Entry(self.frame, width=22, bg=my_config.FOREGROUND)
         self.email_entry.grid(row=5, column=1)
+        self.cc_entry = tk.Entry(self.frame, width=22, bg=my_config.FOREGROUND)
+        self.cc_entry.grid(row=6, column=1)
+        self.exp_date_entry = tk.Entry(self.frame, width=22, bg=my_config.FOREGROUND)
+        self.exp_date_entry.grid(row=7, column=1)
+        self.ccv_entry = tk.Entry(self.frame, width=22, bg=my_config.FOREGROUND)
+        self.ccv_entry.grid(row=8, column=1)
 
         # Create Buttons
-        self.change_button = tk.Button(self.frame, text='change', bg=my_config.FOREGROUND,
+        self.change_button = tk.Button(self.frame, text='Save Changes', bg=my_config.FOREGROUND,
                                        command=self.set_change, width=16)
         self.change_button.grid(row=1, column=2, padx=(10, 0), pady=(10, 0))
         self.cancel_button = tk.Button(self.frame, text='Cancel', bg=my_config.FOREGROUND,
@@ -331,8 +343,12 @@ class AccountEdit:
             self.name_entry.insert(tk.END, customer_info[3])
             self.phone_entry.insert(tk.END, customer_info[4])
             self.email_entry.insert(tk.END, customer_info[5])
+            #self.perm_entry.insert(tk.END, customer_info[6])
+            self.cc_entry.insert(tk.END, customer_info[7])
+            self.exp_date_entry.insert(tk.END, customer_info[8])
+            self.ccv_entry.insert(tk.END, customer_info[9])
         else:
-            messagebox.showinfo("Mendiona bytes", 'ERROR: WRONG ID!!!')
+            messagebox.showinfo("Coffee Shop", 'Error: Invalid ID')
             self.exit()
 
     def set_change(self):
@@ -340,33 +356,54 @@ class AccountEdit:
         if self.error_label:
             self.error_label.destroy()
 
-        # if new password entry is empty don't update it
+        # update password if field is not left blank
         if 0 < len(self.new_password_entry.get()) < 6:
-            self.error_message('minimum password length is 6')
+            self.error_message('Password must be at least 6 characters')
+        # update credit card if field is not left blank
+        if 0 < len(self.cc_entry.get()) < 16:
+            self.error_message('Credit card must be at least 16 characters')
+        # update expiration date if field is not left blank
+        if 0 < len(self.exp_date_entry.get()) < 5:
+            self.error_message('Invalid expiration date')
+            self.error_message('Credit card must be at least 16 characters')
+        # update ccv if field is not left blank
+        if 0 < len(self.ccv_entry.get()) < 3:
+            self.error_message('Invalid CCV')
 
         # checking if all required entries are filled properly
         elif self.password_entry.get() != db.return_customer(my_config.MY_ID)[2]:
-            self.error_message('password does not match.')
+            self.error_message('Invalid password.')
         elif not self.name_entry.get():
-            self.error_message('Can not update empty name.')
+            self.error_message('Name missing.')
         elif self.phone_entry.get() and not my_config.is_integer(self.phone_entry.get()):
-            self.error_message("wrong phone number.")
+            self.error_message("Phone number missing.")
         elif not self.email_entry.get():
-            self.error_message('Can not update empty email.')
+            self.error_message('Email missing.')
 
         else:
+            if self.new_password_entry:
+                pw = self.new_password_entry.get()
+            else:
+                pw = db.return_customer(my_config.MY_ID)[2]
+            if self.cc_entry:
+                cc = self.cc_entry.get()
+            else:
+                cc = db.return_customer(my_config.MY_ID)[7]
+            if self.exp_date_entry:
+                exp_date = self.exp_date_entry.get()
+            else:
+                exp_date = db.return_customer(my_config.MY_ID)[8]  
+            if self.ccv_entry:
+                ccv = self.ccv_entry.get()
+            else:
+                ccv = db.return_customer(my_config.MY_ID)[9]  
+            
             # if all entries are filled correctly
 
-            if self.new_password_entry:
-                # passing new password
-                db.edit_customer(my_config.MY_ID, self.new_password_entry.get(), self.name_entry.get(),
-                                 self.email_entry.get(),
-                                 self.phone_entry.get())
-            else:
-                # passing old password to function (no change)
-                db.edit_customer(my_config.MY_ID,
-                                 db.return_customer(my_config.MY_ID)[2], self.name_entry.get(),
-                                 self.email_entry.get(), self.phone_entry.get())
+            db.edit_customer(my_config.MY_ID, pwd, self.name_entry.get(),
+                             self.email_entry.get(), self.phone_entry.get(),
+                             cc, exp_date, ccv)
+                
 
             self.error_message("Account has been updated.")
 

@@ -1,4 +1,4 @@
-# my-shop
+# CS 487 Project
 GUI APP written in Python using tkinter and sqlite.
 Application is secured for inserting incorrect data.
 All methods, modules and classes have proper docstrings.
@@ -26,15 +26,5 @@ passsword: admin123
 
 login: wojtekkk,
 password: mojehaslo123
-
-## preview
-
-### order panel
-<img src="https://user-images.githubusercontent.com/64193740/105970720-f872ef00-6089-11eb-98c2-6f3db64ec405.png" width=800>
-
-
-### users panel
-<img src="https://user-images.githubusercontent.com/64193740/105970776-06287480-608a-11eb-940f-ed337c57e893.png" width=800>
-
 
 

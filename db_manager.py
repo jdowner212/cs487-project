@@ -4,7 +4,12 @@ import sqlite3
 import my_config
 
 MY_CONNECTION = sqlite3.connect('dataa.db')
+#         ADD COLUMN exp_date TEXT NOT NULL
+#         ADD COLUMN ccv INT NOT NULL DEFAULT (100)
 
+#         cc            INT     NOT NULL DEFAULT (1000000000000000),
+#         exp_date      TEXT    NOT NULL,
+#         ccv           INT     NOT NULL DEFAULT (100)
 
 def initialize():
     """Create tables if not existing."""
@@ -17,8 +22,18 @@ def initialize():
         customer_name TEXT    NOT NULL,
         phone         TEXT    DEFAULT (0) NOT NULL,
         email         TEXT    NOT NULL,
-        perm          INT     NOT NULL DEFAULT (0) 
+        perm          INT     NOT NULL DEFAULT (0),
+        cc            INT     NOT NULL DEFAULT (1000000000000000),
+        exp_date      TEXT    NOT NULL,
+        ccv           INT     NOT NULL DEFAULT (100)
         )""")
+        
+#         connection.execute("""
+#         ALTER TABLE Customers
+#         ADD COLUMN ccv INT NOT NULL DEFAULT (100);
+#         """)
+
+
 
         connection.execute("""
         CREATE TABLE IF NOT EXISTS Orders(
@@ -72,23 +87,23 @@ def is_customer_id_exist(customer_id) -> bool:
         return cursor.fetchone()[0] == 1
 
 
-def add_customer(login, password, name, phone, email):
+def add_customer(login, password, name, phone, email, cc, exp_date, ccv):
     """Adding new customer to DB."""
     with MY_CONNECTION as connection:
         connection.execute(
             """
             INSERT INTO Customers
-            (login,password,customer_name,phone,email)
-            VALUES(?,?,?,?,?)
+            (login,password,customer_name,phone,email, cc, exp_date, ccv)
+            VALUES(?,?,?,?,?,?,?,?)
             """,
-            (login, password, name, phone, email))
+            (login, password, name, phone, email, cc, exp_date, ccv))
 
 
 def return_customers():
     """Returns list of all customers in DB."""
     with MY_CONNECTION as connection:
         cursor = connection.cursor()
-        cursor.execute("SELECT id_customer, login, customer_name, phone, email, perm FROM Customers")
+        cursor.execute("SELECT id_customer, login, customer_name, phone, email, perm, cc, exp_date, ccv FROM Customers")
         return cursor.fetchall()
 
 
@@ -98,7 +113,7 @@ def return_customer(customer_id):
         cursor = connection.cursor()
         cursor.execute(
             """
-            SELECT id_customer, login, password, customer_name, phone, email, perm
+            SELECT id_customer, login, password, customer_name, phone, email, perm, cc, exp_date, ccv
             FROM Customers
             WHERE id_customer=?
             """,
@@ -126,28 +141,28 @@ def delete_customer(customer_id):
         connection.execute("DELETE FROM Customers WHERE id_customer=?", (customer_id,))
 
 
-def update_customer(customer_id, login, name, email, phone="", permission=0):
+def update_customer(customer_id, login, name, email, phone="", permission=0, cc=1000000000000000, exp_date="", ccv=100):
     """Update's Customer by given id."""
     with MY_CONNECTION as connection:
         connection.execute(
             """
             UPDATE Customers
-            SET login=?, customer_name=?, phone=?, email=?, perm=?
+            SET login=?, customer_name=?, phone=?, email=?, perm=?, cc=?, exp_date=?, ccv=?
             WHERE id_customer=?
             """,
-            (login, name, phone, email, permission, customer_id))
+            (login, name, phone, email, permission, cc, exp_date, ccv, customer_id))
 
 
-def edit_customer(customer_id, password, name, email, phone):
+def edit_customer(customer_id, password, name, email, phone, cc, exp_date, ccv):
     """Edit's Customer by given id."""
     with MY_CONNECTION as connection:
         connection.execute(
             """
             UPDATE Customers
-            SET password=?, customer_name=?, phone=?, email=?
+            SET password=?, customer_name=?, phone=?, email=?, cc=?, exp_date=?, ccv=?
             WHERE id_customer=?
             """,
-            (password, name, phone, email, customer_id))
+            (password, name, phone, email, cc, exp_date, ccv, customer_id))
 
 
 def customer_perm(login, password):
