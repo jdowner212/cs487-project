@@ -7,7 +7,7 @@ import db_manager as db
 import my_config
 
 # Module Constants:
-LOGIN_WINDOW_SIZE = "800x300"
+LOGIN_WINDOW_SIZE = "650x900"
 FALSE_LOG_IN_VALUE = -1
 
 
@@ -110,6 +110,12 @@ class LoginWindow:
         phone_label.grid(row=3, column=0, sticky=tk.E)
         email_label = tk.Label(self.frame, text='Email:', bg=my_config.BACKGROUND)
         email_label.grid(row=4, column=0, sticky=tk.E)
+        cc_label = tk.Label(self.frame, text='Credit Card Number:', bg=my_config.BACKGROUND)
+        cc_label.grid(row=5, column=0, sticky=tk.E)
+        exp_date_label = tk.Label(self.frame, text='Expiration Date:', bg=my_config.BACKGROUND)
+        exp_date_label.grid(row=6, column=0, sticky=tk.E)
+        ccv_label = tk.Label(self.frame, text='CCV:', bg=my_config.BACKGROUND)
+        ccv_label.grid(row=7, column=0, sticky=tk.E)
 
         # Create Entry box for Customers
         self.login_entry = tk.Entry(self.frame, width=18, bg=my_config.FOREGROUND)
@@ -122,14 +128,20 @@ class LoginWindow:
         self.phone_entry.grid(row=3, column=1)
         self.email_entry = tk.Entry(self.frame, width=18, bg=my_config.FOREGROUND)
         self.email_entry.grid(row=4, column=1)
+        self.cc_entry = tk.Entry(self.frame, width=18, bg=my_config.FOREGROUND)
+        self.cc_entry.grid(row=5, column=1)
+        self.exp_date_entry = tk.Entry(self.frame, width=18, bg=my_config.FOREGROUND)
+        self.exp_date_entry.grid(row=6, column=1)
+        self.ccv_entry = tk.Entry(self.frame, width=18, bg=my_config.FOREGROUND)
+        self.ccv_entry.grid(row=7, column=1)
 
         # buttons
         login_button = tk.Button(self.frame, text='Create account', command=self.create_account_db,
                                  width=16, bg=my_config.FOREGROUND)
-        login_button.grid(row=6, column=0, pady=(20, 0))
+        login_button.grid(row=8, column=1, pady=(20, 0))
         create_button = tk.Button(self.frame, text='Cancel', command=self.initialize_login_window,
                                   width=16, bg=my_config.FOREGROUND)
-        create_button.grid(row=6, column=1, pady=(20, 0))
+        create_button.grid(row=9, column=1)
 
     def create_account_db(self):
         """Create new account if all required entries are filled."""
@@ -176,7 +188,8 @@ class LoginWindow:
             else:
                 db.add_customer(self.login_entry.get(), self.password_entry.get(),
                                 self.name_entry.get(), self.phone_entry.get(),
-                                self.email_entry.get())
+                                self.email_entry.get(), self.cc_entry.get(),
+                                self.exp_date_entry.get(), self.ccv_entry.get())
                 self.frame.destroy()
                 application = LoginWindow(self.master)
                 application.initialize_login_window()
@@ -190,7 +203,7 @@ class LoginWindow:
 
     def customer_app(self):
         """Initializing Customer window."""
-        self.welcome_frmae.destroy()
+        self.welcome_frame.destroy()
         self.frame.destroy()
         application = customer_window.CustomerApp(self.master)
         application.initialize_main_buttons()
