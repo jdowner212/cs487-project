@@ -8,7 +8,7 @@ import login_window
 import my_config
 
 # Module Constants:
-CUSTOMER_WINDOW_SIZE = "650x600"
+CUSTOMER_WINDOW_SIZE = "650x900"
 
 PRODUCT_COLUMNS = ('Id', 'Product name', 'Price', 'In stock')
 PRODUCT_COLUMNS_SIZE = (25, 150, 50, 50)
@@ -332,10 +332,10 @@ class AccountEdit:
         # Create Buttons
         self.change_button = tk.Button(self.frame, text='Save Changes', bg=my_config.FOREGROUND,
                                        command=self.set_change, width=16)
-        self.change_button.grid(row=1, column=2, padx=(10, 0), pady=(10, 0))
+        self.change_button.grid(row=9, column=1, pady=(10, 0))
         self.cancel_button = tk.Button(self.frame, text='Cancel', bg=my_config.FOREGROUND,
                                        command=self.exit, width=16)
-        self.cancel_button.grid(row=2, column=2, padx=(10, 0))
+        self.cancel_button.grid(row=10, column=1)
 
         # getting customer info from DB
         customer_info = db.return_customer(my_config.MY_ID)

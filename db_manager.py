@@ -23,9 +23,9 @@ def initialize():
         phone         TEXT    DEFAULT (0) NOT NULL,
         email         TEXT    NOT NULL,
         perm          INT     NOT NULL DEFAULT (0),
-        cc            INT     NOT NULL DEFAULT (1000000000000000),
+        cc            INT     NOT NULL DEFAULT (1111222233334444),
         exp_date      TEXT    NOT NULL,
-        ccv           INT     NOT NULL DEFAULT (100)
+        ccv           INT     NOT NULL DEFAULT (123)
         )""")
         
 #         connection.execute("""
@@ -93,7 +93,7 @@ def add_customer(login, password, name, phone, email, cc, exp_date, ccv):
         connection.execute(
             """
             INSERT INTO Customers
-            (login,password,customer_name,phone,email, cc, exp_date, ccv)
+            (login,password,customer_name,phone,email,cc,exp_date,ccv)
             VALUES(?,?,?,?,?,?,?,?)
             """,
             (login, password, name, phone, email, cc, exp_date, ccv))
