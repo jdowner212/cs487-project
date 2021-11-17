@@ -58,7 +58,13 @@ class LoginWindow:
         create_button = tk.Button(self.frame, text='Admin Test',
                                   bg=my_config.FOREGROUND, command=self.admin_app, width=16)
         create_button.grid(row=5, column=1)
+        # create_button = tk.Button(self.frame, text='get user',
+        #                           bg=my_config.FOREGROUND, command=self.get_all_user, width=16)
+        # create_button.grid(row=6, column=1)
         self.frame.pack()
+
+    def get_all_user(self):
+        print(db.get_all_customers())
 
     def login(self):
         # deleting error label from last add_order call, if it exists
@@ -81,7 +87,7 @@ class LoginWindow:
                 self.error_label = tk.Label(self.frame, text="try again..",
                                             fg=my_config.ERROR_FOREGROUND, bg=my_config.BACKGROUND)
                 self.error_label.grid(row=2, column=1)
-            elif perm == 1:
+            elif perm == 2:
                 self.admin_app()
             else:
                 self.customer_app()

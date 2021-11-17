@@ -14,9 +14,10 @@ class appDB:
         email         TEXT    NOT NULL,
         password      TEXT    NOT NULL,
         full_name     TEXT    NOT NULL,
-        phone         TEXT    DEFAULT (0) NOT NULL,
+        phone         INT     NOT NULL,
         perm          INT     NOT NULL DEFAULT (0)
         )""")
+
         self.conn.commit()
 
     def add_user_db(self, email, password, full_name, phone):

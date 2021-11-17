@@ -31,4 +31,14 @@ class CustomerApp:
         test_label = tk.Label(self.frame, text='Customer Menu', bg=my_config.BACKGROUND)
         test_label.grid(row=0, column=0, pady=(10, 0))
 
+        logoff_button = tk.Button(self.frame, text='Log off', bg=my_config.FOREGROUND,
+                                  command=self.log_off, width=16)
+        logoff_button.grid(row=3, column=0, pady=(0, 3))
+
         self.frame.pack()
+
+    def log_off(self):
+        if self.frame:
+            self.frame.destroy()
+        application = login_window.LoginWindow(self.master)
+        application.initialize_login_window()

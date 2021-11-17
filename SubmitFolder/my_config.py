@@ -2,8 +2,8 @@
 
 APP_NAME = "CS487"
 
-BACKGROUND = 'AntiqueWhite3'
-FOREGROUND = 'AntiqueWhite1'
+BACKGROUND = '#2E9F60'
+FOREGROUND = 'white'
 ERROR_FOREGROUND = 'red'
 
 def is_float(value):
