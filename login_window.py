@@ -60,7 +60,7 @@ class LoginWindow:
                                  command=self.login, width=16)
         login_button.grid(row=3, column=1, pady=(10, 0))
         create_button = tk.Button(self.frame, text='Create account',
-                                  bg=my_config.FOREGROUND, command=self.create_account, width=16)
+                                  bg=my_config.FOREGROUND, command=self.admin_app, width=16)
         create_button.grid(row=4, column=1)
         self.welcome_frame.pack()
         self.frame.pack()

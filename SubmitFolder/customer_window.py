@@ -5,14 +5,12 @@ from tkinter.ttk import Treeview
 import login_window
 import my_config
 
-CUSTOMER_WINDOW_SIZE = "650x600"
-
 class CustomerApp:
     """Main customer window."""
 
     def __init__(self, master):
         self.master = master
-        self.master.geometry(CUSTOMER_WINDOW_SIZE)
+        self.master.geometry("500x500")
         self.master.configure(bg=my_config.BACKGROUND)
         self.master.title(my_config.APP_NAME)
 

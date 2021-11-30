@@ -55,8 +55,8 @@ class LoginWindow:
         create_button = tk.Button(self.frame, text='Create new account',
                                   bg=my_config.FOREGROUND, command=self.create_account, width=16)
         create_button.grid(row=4, column=1)
-        create_button = tk.Button(self.frame, text='Admin Test',
-                                  bg=my_config.FOREGROUND, command=self.admin_app, width=16)
+        create_button = tk.Button(self.frame, text='test',
+                                  bg=my_config.FOREGROUND, command=self.test_func, width=16)
         create_button.grid(row=5, column=1)
         # create_button = tk.Button(self.frame, text='get user',
         #                           bg=my_config.FOREGROUND, command=self.get_all_user, width=16)
@@ -84,7 +84,7 @@ class LoginWindow:
         else:
             user_id, perm = db.get_user_perm(self.login_entry.get(), self.password_entry.get())
             if user_id == False or perm == -1:
-                self.error_label = tk.Label(self.frame, text="try again..",
+                self.error_label = tk.Label(self.frame, text="wrong password or email",
                                             fg=my_config.ERROR_FOREGROUND, bg=my_config.BACKGROUND)
                 self.error_label.grid(row=2, column=1)
             elif perm == 2:
@@ -144,7 +144,7 @@ class LoginWindow:
                                         fg=my_config.ERROR_FOREGROUND, bg=my_config.BACKGROUND)
             self.error_label.grid(row=5, column=1)
         elif self.phone_entry.get() and not my_config.is_integer(self.phone_entry.get()):
-            self.error_label = tk.Label(self.frame, text="wrong phone number",
+            self.error_label = tk.Label(self.frame, text="incorrect phone number",
                                         fg=my_config.ERROR_FOREGROUND, bg=my_config.BACKGROUND)
             self.error_label.grid(row=5, column=1)
 
@@ -172,3 +172,7 @@ class LoginWindow:
         self.frame.destroy()
         application = customer_window.CustomerApp(self.master)
         application.initialize_main_menu()
+
+    def test_func(self):
+        all_users = db.get_all_customers()
+        print(all_users)
