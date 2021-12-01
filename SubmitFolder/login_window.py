@@ -171,7 +171,7 @@ class LoginWindow:
     def customer_app(self):
         self.frame.destroy()
         application = customer_window.CustomerApp(self.master)
-        application.initialize_main_menu()
+        application.initialize_main_buttons()
 
     def test_func(self):
         all_users = db.get_all_customers()

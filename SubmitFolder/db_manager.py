@@ -126,7 +126,49 @@ class appDB:
             """,
             (product_id,))
         return self.cur.fetchone()
+    
+    def get_products():
+        """Returns list of all products."""
+        with MY_CONNECTION as connection:
+            cursor = connection.cursor()
+            cursor.execute(
+                """
+                SELECT id_product, product_name, product_price, in_stock, description
+                FROM Products
+                """)
+            return cursor.fetchall()
 
     def delete_product(self, product_id):
         self.cur.execute("DELETE FROM Products WHERE id_product=?", (product_id,))
         self.conn.commit()
+        
+        
+    def get_order(order_id):
+        """Return order by given id."""
+        with MY_CONNECTION as connection:
+            cursor = connection.cursor()
+            cursor.execute(
+                """
+                SELECT id_order, id_customer, id_product, quantity, total_price, payment_status,
+                send_status, order_date, location
+                FROM Orders
+                WHERE id_order=?
+                """,
+                (order_id,))
+            return cursor.fetchone()
+
+
+    def get_orders():
+        """Returns list of all Orders in DB."""
+        with MY_CONNECTION as connection:
+            cursor = connection.cursor()
+            cursor.execute(
+                """
+                SELECT id_order, id_customer, id_product, quantity, total_price,
+                payment_status, send_status, order_date, location
+                FROM Orders
+                """)
+            records = cursor.fetchall()
+            return records
+        
+        
