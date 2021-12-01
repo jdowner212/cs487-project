@@ -9,7 +9,7 @@ import my_config
 
 
 # Module Constants:
-LOGIN_WINDOW_SIZE = "650x900"
+LOGIN_WINDOW_SIZE = "650x1000"
 FALSE_LOG_IN_VALUE = -1
 
 
