@@ -127,16 +127,14 @@ class appDB:
             (product_id,))
         return self.cur.fetchone()
     
-    def get_products():
+    def get_products(self):
         """Returns list of all products."""
-        with MY_CONNECTION as connection:
-            cursor = connection.cursor()
-            cursor.execute(
-                """
-                SELECT id_product, product_name, product_price, in_stock, description
-                FROM Products
-                """)
-            return cursor.fetchall()
+        self.cur.execute(
+            """
+            SELECT id_product, product_name, product_price, in_stock, description
+            FROM Products
+            """)
+        return self.cur.fetchall()
 
     def delete_product(self, product_id):
         self.cur.execute("DELETE FROM Products WHERE id_product=?", (product_id,))
