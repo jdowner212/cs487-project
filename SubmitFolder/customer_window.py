@@ -11,11 +11,8 @@ import my_config
 
 db = db_manager.appDB('appDB.db')
 
-PRODUCT_COLUMNS_SIZE = (25, 150, 50, 50)
-
 MY_ORDERS_COLUMNS = ('Id', 'Product name', 'Quantity', 'Total price')
 MY_ORDERS_COLUMNS_SIZE = (25, 150, 60, 90)
-
 
 class CustomerApp:
     """Main customer window."""

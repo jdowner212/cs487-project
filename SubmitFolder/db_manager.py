@@ -1,6 +1,8 @@
 """DB transactions module"""
 import sqlite3
 
+# from db_manager import delete_customer
+
 # import my_config
 
 class appDB:
@@ -205,4 +207,30 @@ class appDB:
         self.cur.execute("""
         SELECT * FROM Orders WHERE id_order=?
         """, (order_id, ))
+        return self.cur.fetchone()
+
+    def get_one_user(self, user_id):
+        self.cur.execute("""
+        SELECT * FROM Customers WHERE id_customer=?
+        """, (user_id,))
+        return self.cur.fetchone()
+    
+    def delete_customer(self, user_id):
+        self.cur.execute("""
+        DELETE FROM Customers WHERE id_customer=?
+        """, (user_id,))
+        self.conn.commit()
+
+    def update_user(self, user_id, email, password, full_name, phone):
+        self.cur.execute("""
+        UPDATE Customers
+        SET email=?, password=?, full_name=?, phone=?
+        WHERE id_customer=?
+        """, (email, password, full_name, phone, user_id))
+        self.conn.commit()
+
+    def get_user_email(self, email):
+        self.cur.execute("""
+        SELECT * FROM Customers WHERE email=?
+        """, (email,))
         return self.cur.fetchone()

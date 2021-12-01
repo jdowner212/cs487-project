@@ -174,5 +174,5 @@ class LoginWindow:
         application.initialize_main_buttons()
 
     def test_func(self):
-        all_users = db.get_all_orders()
+        all_users = db.get_all_customers()
         print(all_users)
