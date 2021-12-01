@@ -111,12 +111,12 @@ class CustomerApp:
 
         # Right Side
         points          = tk.Label( frame_right,  text = 'Points: 183')
-#        button_shop     = tk.Button(frame_right,  text = 'Shop',        command = self.list_products, width = 16)
+        button_shop     = tk.Button(frame_right,  text = 'Shop',        command = self.list_products, width = 16)
         button_account  = tk.Button(frame_right,  text = 'Account Info',command = self.account_edit,  width = 16)
         button_logout   = tk.Button(frame_right,  text = 'Log Out',     command = self.log_off,       width = 16)
         
         points.grid(         row=0,column=0,  sticky = tk.W, pady=(10,0))
- #       button_shop.grid(    row=1,column=0,  sticky = tk.W)
+        button_shop.grid(    row=1,column=0,  sticky = tk.W)
         button_account.grid( row=1,column=0,  sticky = tk.W)
         button_logout.grid(  row=2,column=0,  sticky = tk.W)
         
@@ -139,12 +139,12 @@ class CustomerApp:
         button_remove.grid(  row=3,column=0, sticky = tk.W)
         
        
-        table.column( "# 1",    anchor=tk.CENTER)
-        table.column( "# 2",    anchor=tk.CENTER)
-        table.column( "# 3",    anchor=tk.CENTER)
-        table.heading("# 1",    text="Product", width = 150)
-        table.heading("# 2",    text="Quantity",width = 150)
-        table.heading("# 3",    text="Price",   width = 150)
+        table.column( "# 1",    anchor=tk.CENTER, width = 150)
+        table.column( "# 2",    anchor=tk.CENTER, width = 150)
+        table.column( "# 3",    anchor=tk.CENTER, width = 150)
+        table.heading("# 1",    text="Product")
+        table.heading("# 2",    text="Quantity")
+        table.heading("# 3",    text="Price")
         table.insert('', 'end', text="1", values=('Coffee',   '1', '$2'))
         table.insert('', 'end', text="2", values=('Donut',    '2', '$4'))
         table.insert('', 'end', text="3", values=('Lemonade', '1', '$3'))
