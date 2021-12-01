@@ -130,3 +130,17 @@ class appDB:
     def delete_product(self, product_id):
         self.cur.execute("DELETE FROM Products WHERE id_product=?", (product_id,))
         self.conn.commit()
+
+    def update_product(self, product_id, name, price, stock):
+        self.cur.execute("""
+        UPDATE Products
+        SET product_name=?, product_price=?, stock=?
+        WHERE id_product=?
+        """, (name, price, stock, product_id)
+        )
+        self.conn.commit()
+
+    def get_all_product(self):
+        self.cur.execute("""
+        SELECT * FROM Products
+        """)

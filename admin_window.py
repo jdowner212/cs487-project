@@ -465,9 +465,6 @@ class ProductsMenu:
         exit_button = tk.Button(self.child_frameb, text='Log off', command=self.exit_admin_window,
                                 width=20, bg=my_config.FOREGROUND)
         exit_button.grid(row=5, column=0, sticky=tk.SE)
-        
- 
-
 
 #         exit_button = tk.Button(self.entry_frame, text='Log off', command=self.exit_admin_window,
 #                                 width=20, bg=my_config.FOREGROUND)
