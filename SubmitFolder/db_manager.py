@@ -145,12 +145,15 @@ class appDB:
         """)
         
     def add_order(self, id_customer, id_product, quantity):
-        self.cur.execute("""
-        INSERT INTO Orders
-        (id_customer, id_product, quantity)
-        VALUES (?, ?, ?)
-        """,(id_customer, id_product, quantity))
-        self.conn.commit()
+        product_stock = self.get_product(id_product)[3]
+        if product_stock > 0:
+            self.remove_one_product(id_product, (product_stock-1))
+            self.cur.execute("""
+            INSERT INTO Orders
+            (id_customer, id_product, quantity)
+            VALUES (?, ?, ?)
+            """,(id_customer, id_product, quantity))
+            self.conn.commit()
         
     def get_customer_order(self, id_customer):
         self.cur.execute("""
@@ -183,5 +186,23 @@ class appDB:
         return self.cur.fetchall()
     
     def remove_order(self, order_id):
+        remove_order = self.get_one_order(order_id)
+        remove_product = self.get_product(remove_order[2])
+        product_stock = self.get_product(remove_order[2])[3]
+        self.update_product(remove_product[0], remove_product[1], remove_product[2], product_stock+1)
         self.cur.execute("DELETE FROM Orders WHERE id_order=?", (order_id,))
         self.conn.commit()
+    
+    def remove_one_product(self, product_id, stock):
+        self.cur.execute("""
+        UPDATE Products
+        SET stock=?
+        WHERE id_product=?
+        """, (stock, product_id,))
+        self.conn.commit()
+
+    def get_one_order(self, order_id):
+        self.cur.execute("""
+        SELECT * FROM Orders WHERE id_order=?
+        """, (order_id, ))
+        return self.cur.fetchone()
