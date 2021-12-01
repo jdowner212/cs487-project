@@ -9,7 +9,7 @@ import login_window
 import my_config
 
 # Module Constants:
-CUSTOMER_WINDOW_SIZE = "1000x1500"
+CUSTOMER_WINDOW_SIZE = "1000x1200"
 
 PRODUCT_COLUMNS = ('Id', 'Product name', 'Price', 'In stock')
 PRODUCT_COLUMNS_SIZE = (25, 150, 50, 50)
@@ -48,38 +48,17 @@ class CustomerApp:
         self.fg = my_config.FOREGROUND
         self.bg = my_config.BACKGROUND
 
-    def initialize_main_buttons(self):
-#         """Initializes main buttons.
-
-#         Used in other functions repeatedly, that's why it's not in __init__"""
-#         if self.frame:
-#             self.frame.destroy()
-#         if self.function_frame:
-#             self.function_frame.destroy()
-#         if self.function_frame2:
-#             self.function_frame2.destroy()
-#         if self.function_frame3:
-#             self.function_frame3.destroy()
-
-#         self.frame = tk.Frame(self.master, bg=my_config.BACKGROUND)
-#         search_button = tk.Button(self.frame, text='List of products',
-#                                   bg=my_config.FOREGROUND, command=self.list_products, width=16)
-#         search_button.grid(row=0, column=0, pady=(10, 3))
-#         edit_button = tk.Button(self.frame, text='Edit account', bg=my_config.FOREGROUND,
-#                                 command=self.account_edit, width=16)
-#         edit_button.grid(row=1, column=0, pady=(0, 3))
-#         orders_button = tk.Button(self.frame, text='My Orders', bg=my_config.FOREGROUND,
-#                                   command=self.my_orders, width=16)
-#         orders_button.grid(row=2, column=0, pady=(0, 3))
-#         logoff_button = tk.Button(self.frame, text='Log off', bg=my_config.FOREGROUND,
-#                                   command=self.log_off, width=16)
-#         logoff_button.grid(row=3, column=0, pady=(0, 3))
-#         self.frame.pack()
 
 
         
+    def initialize_main_buttons(self):
+        """Lists all of the customer products under menu."""  
         if self.frame:
             self.frame.destroy()
+        if self.frame_left:
+            self.frame_left.destroy()
+        if self.frame_right:
+            self.frame_right.destroy()
         if self.function_frame:
             self.function_frame.destroy()
         if self.function_frame2:
@@ -89,84 +68,22 @@ class CustomerApp:
         if self.error_label:
             self.error_label.destroy()
             
-
-            
-        self.frame        = tk.Frame(self.master,      bd=15, bg=my_config.BACKGROUND)        
-        self.frame_title  = tk.Frame(self.frame,              bg=my_config.BACKGROUND)
-        self.frame_top    = tk.Frame(self.frame,              bg=my_config.BACKGROUND)
-        self.frame_bottom = tk.Frame(self.frame,              bg=my_config.BACKGROUND)
-        frame_left        = tk.Frame(self.frame_top,   bd=15, bg=my_config.BACKGROUND)
-        frame_right       = tk.Frame(self.frame_top,   bd=15, bg=my_config.BACKGROUND) 
+        self.frame        = tk.Frame(self.master, bg=my_config.BACKGROUND, bd=15)        
+        self.frame_title  = tk.Frame(self.frame,  bg=my_config.BACKGROUND)
+        self.frame_left   = tk.Frame(self.frame, bg=my_config.BACKGROUND, bd=15)
+        #self.frame_right  = tk.Frame(self.frame, bg=my_config.BACKGROUND, bd=15)
+        self.frame_title.grid(row=0, column=0, sticky=tk.N)
+        self.frame_left.grid( row=1, column=0, sticky=tk.N)
+        #self.frame_right.grid(row=1, column=1, sticky=tk.N)
         
-        self.frame_title.grid(   row=0, column=0, sticky=tk.N)
-        self.frame_top.grid(     row=1, column=0, sticky=tk.N)
-        self.frame_bottom.grid(  row=2, column=0, sticky=tk.N)
-        frame_left.grid(         row=0, column=0, sticky=tk.W, padx=5)
-        frame_right.grid(        row=0, column=1, sticky=tk.W, padx=5)  
-        
-        
-        welcome = tk.Label(self.frame_title, text="User Page", font="{U.S. 101} 30 bold",
-                           bg=my_config.BACKGROUND, fg=my_config.FOREGROUND)   
-        welcome.grid(row=0, column=0, pady=10, sticky = tk.N)
-
-        # Right Side
-        points          = tk.Label( frame_right,  text = 'Points: 183')
-        button_shop     = tk.Button(frame_right,  text = 'Shop',        command = self.list_products, width = 16)
-        button_account  = tk.Button(frame_right,  text = 'Account Info',command = self.account_edit,  width = 16)
-        button_logout   = tk.Button(frame_right,  text = 'Log Out',     command = self.log_off,       width = 16)
-        
-        points.grid(         row=0,column=0,  sticky = tk.W, pady=(10,0))
-        button_shop.grid(    row=1,column=0,  sticky = tk.W)
-        button_account.grid( row=1,column=0,  sticky = tk.W)
-        button_logout.grid(  row=2,column=0,  sticky = tk.W)
-        
-        
-        # Left Side
-        label_cart      = tk.Label(    frame_left, text = 'Shopping Cart', font="{U.S. 101} 15 bold" )
-        table           = ttk.Treeview(frame_left, column=("c1", "c2", "c3"), show='headings', height=5)
-        
-        label_cart.grid(row=0,column=0)
-        table.grid(     row=1,column=0, sticky = tk.W)
-        
-        def remove_from_cart():
-            selected_item = table.selection()[0]
-            table.delete(selected_item)
-        
-        button_checkout = tk.Button(frame_left, text = 'Check Out',   command = self.log_off)
-        button_remove   = tk.Button(frame_left, text = 'Remove Item', command = remove_from_cart)
-        
-        button_checkout.grid(row=2,column=0, sticky = tk.W, pady = (10,0))
-        button_remove.grid(  row=3,column=0, sticky = tk.W)
-        
-       
-        table.column( "# 1",    anchor=tk.CENTER, width = 150)
-        table.column( "# 2",    anchor=tk.CENTER, width = 150)
-        table.column( "# 3",    anchor=tk.CENTER, width = 150)
-        table.heading("# 1",    text="Product")
-        table.heading("# 2",    text="Quantity")
-        table.heading("# 3",    text="Price")
-        table.insert('', 'end', text="1", values=('Coffee',   '1', '$2'))
-        table.insert('', 'end', text="2", values=('Donut',    '2', '$4'))
-        table.insert('', 'end', text="3", values=('Lemonade', '1', '$3'))
-
         self.list_products()
-        self.frame.pack() 
 
+        label_tree        = tk.Label(    self.frame_left, text = 'Products',  font="{U.S. 101} 15 bold" )
+        self.product_tree = ttk.Treeview(self.frame_left, column=("c1", "c2", "c3", "c4"), show='headings', height=10)
         
-    def list_products(self):
-        """Lists all of the customer products under menu."""
-        self.initialize_main_buttons()
-
-        frame_left        = tk.Frame(self.frame_bottom,   bd=15, bg=my_config.BACKGROUND)
-        frame_right       = tk.Frame(self.frame_bottom,   bd=15, bg=my_config.BACKGROUND)
+        label_tree.grid(       row=5,column=0, sticky = tk.W, pady=(30,0))
+        self.product_tree.grid(row=6,column=0, sticky = tk.W)
         
-        frame_left.grid(       row=0, column=0, sticky=tk.W, padx=5)
-        frame_right.grid(      row=0, column=1, sticky=tk.W, padx=5) 
-        
-
-        label_tree        = tk.Label(    frame_left, text = 'Products',  font="{U.S. 101} 15 bold" )
-        self.product_tree = ttk.Treeview(frame_left, column=("c1", "c2", "c3", "c4"), show='headings', height=10)
-
         self.product_tree.column( "# 1", anchor=tk.CENTER, width=100)
         self.product_tree.column( "# 2", anchor=tk.CENTER, width=150)
         self.product_tree.column( "# 3", anchor=tk.CENTER, width=100)
@@ -182,40 +99,96 @@ class CustomerApp:
         for record in records:
             self.product_tree.insert('', tk.END, values=[record[0], record[1], record[2], record[3]])
 
-        label_tree.grid(       row=0,column=0, pady=(10,0))
-        self.product_tree.grid(row=1,column=0, sticky = tk.W)
 
-        scrollbar = tk.Scrollbar(frame_left, orient=tk.VERTICAL)
+
+        scrollbar = tk.Scrollbar(self.frame_left, orient=tk.VERTICAL)
         scrollbar.configure(command=self.product_tree.set)
         self.product_tree.configure(yscrollcommand=scrollbar)
         self.product_tree.bind('<ButtonRelease-1>', self.product_selection)
 
         # creating entry boxes
-        self.id_product_entry = tk.Entry(frame_right, width=30, bg=self.fg)
-        self.quantity_entry   = tk.Entry(frame_right, width=30, bg=self.fg)
-        self.location_entry   = tk.Entry(frame_right, width=30, bg=self.fg)
+        self.id_product_entry = tk.Entry(self.frame_left, width=30, bg=self.fg)
+        self.quantity_entry   = tk.Entry(self.frame_left, width=30, bg=self.fg)
+        self.location_entry   = tk.Entry(self.frame_left, width=30, bg=self.fg)
 
-        self.id_product_entry.grid(row=0, column=0, sticky=tk.W, pady=(10,0))
-        self.quantity_entry.grid(  row=1, column=0, sticky=tk.W)
-        self.location_entry.grid(  row=2, column=0, sticky=tk.W)
+        self.id_product_entry.grid(row=7, column=0, sticky=tk.W, pady=(10,0))
+        self.quantity_entry.grid(  row=8, column=0, sticky=tk.W)
+        self.location_entry.grid(  row=9, column=0, sticky=tk.W)
         
         # creating labels
-        id_product_label = tk.Label(frame_right, text='Product ID:',     bg=self.bg)
-        quantity_label   = tk.Label(frame_right, text='Quantity:',       bg=self.bg)
-        location_label   = tk.Label(frame_right, text='Order location:', bg=self.bg)
+        id_product_label = tk.Label(self.frame_left, text='Product ID',     bg=self.bg)
+        quantity_label   = tk.Label(self.frame_left, text='Quantity',       bg=self.bg)
+        location_label   = tk.Label(self.frame_left, text='Order location', bg=self.bg)
        
-        id_product_label.grid(row=0, column=1, sticky = tk.W, pady=(10,0))
-        quantity_label.grid(  row=1, column=1, sticky = tk.W)
-        location_label.grid  (row=2, column=1, sticky = tk.W)
+        id_product_label.grid(row=7, column=0, sticky = tk.W, padx = 300, pady=(10,0))
+        quantity_label.grid(  row=8, column=0, sticky = tk.W, padx = 300)
+        location_label.grid  (row=9, column=0, sticky = tk.W, padx = 300)
 
 
         # buttons
-        order_button = tk.Button(  frame_right, text='Place order', bg=self.fg, command=self.place_order,     width=16)
-        details_button = tk.Button(frame_right, text='Details',     bg=self.fg, command=self.product_details, width=16)
+        order_button = tk.Button(  self.frame_left, text='Place order', bg=self.fg, command=self.place_order,     width=16)
+        details_button = tk.Button(self.frame_left, text='Details',     bg=self.fg, command=self.product_details, width=16)
         
-        order_button.grid(  row=3, column=0, sticky = tk.W, pady=(10,0))
-        details_button.grid(row=4, column=0, sticky = tk.W)
+        order_button.grid(  row=10, column=0, sticky = tk.W, pady=(10,0))
+        details_button.grid(row=11, column=0, sticky = tk.W)
         
+        self.frame.pack()
+        
+    def list_products(self):
+        
+       # frame_left  = tk.Frame(self.frame_top, bg=my_config.BACKGROUND, bd=15)
+       # frame_right = tk.Frame(self.frame_top, bg=my_config.BACKGROUND, bd=15) 
+
+        #self.frame_left.grid( row=0, column=0, sticky=tk.W)
+        #self.frame_right.grid(row=0, column=1, sticky=tk.W)  
+        
+        
+        welcome = tk.Label(self.frame_left, text="User Page", font="{U.S. 101} 30 bold",
+                           bg=my_config.BACKGROUND, fg=my_config.FOREGROUND)   
+        welcome.grid(row=0, column=0, pady=10, sticky = tk.W)
+
+        
+        # Left Side
+        label_cart      = tk.Label(    self.frame_left, text = 'Shopping Cart', font="{U.S. 101} 15 bold" )
+        table           = ttk.Treeview(self.frame_left, column=("c1", "c2", "c3"), show='headings', height=5)
+        
+        label_cart.grid(row=1,column=0, sticky = tk.W, pady = (10,0))
+        table.grid(     row=2,column=0, sticky = tk.W)
+        
+        # Right Side
+        points          = tk.Label( self.frame_left,  text = 'Points: 183', width = 16)
+        #button_shop     = tk.Button(frame_right,  text = 'Shop',        command = self.list_products, width = 16)
+        button_account  = tk.Button(self.frame_left,  text = 'Account Info',command = self.account_edit,  width = 16)
+        button_logout   = tk.Button(self.frame_left,  text = 'Log Out',     command = self.log_off,       width = 16)
+        
+        points.grid(         row=2,column=0,  sticky = tk.N + tk.W, padx = 500, pady=(10,0))
+        #button_shop.grid(    row=1,column=0,  sticky = tk.W)
+        button_account.grid( row=2,column=0,  sticky = tk.N + tk.W, padx = 500, pady=(50,0))
+        button_logout.grid(  row=2,column=0,  sticky = tk.N + tk.W, padx = 500, pady=(90,0))
+        
+        
+        def remove_from_cart():
+            selected_item = table.selection()[0]
+            table.delete(selected_item)
+        
+        button_checkout = tk.Button(self.frame_left, text = 'Check Out',   command = self.log_off)
+        button_remove   = tk.Button(self.frame_left, text = 'Remove Item', command = remove_from_cart)
+        
+        button_checkout.grid(row=3,column=0, sticky = tk.W, pady = (10,0))
+        button_remove.grid(  row=4,column=0, sticky = tk.W)
+        
+       
+        table.column( "# 1",    anchor=tk.CENTER, width = 150)
+        table.column( "# 2",    anchor=tk.CENTER, width = 150)
+        table.column( "# 3",    anchor=tk.CENTER, width = 150)
+        table.heading("# 1",    text="Product")
+        table.heading("# 2",    text="Quantity")
+        table.heading("# 3",    text="Price")
+        table.insert('', 'end', text="1", values=('Coffee',   '1', '$2'))
+        table.insert('', 'end', text="2", values=('Donut',    '2', '$4'))
+        table.insert('', 'end', text="3", values=('Lemonade', '1', '$3'))
+
+        self.frame.pack() 
 
 #     def list_products(self):
 #         """Lists all of the customer products under menu."""
