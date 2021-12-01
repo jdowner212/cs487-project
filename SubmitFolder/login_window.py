@@ -82,8 +82,8 @@ class LoginWindow:
             self.error_label.grid(row=2, column=1)
 
         else:
-            user_id, perm = db.get_user_perm(self.login_entry.get(), self.password_entry.get())
-            if user_id == False or perm == -1:
+            my_config.USER_ID, perm = db.get_user_perm(self.login_entry.get(), self.password_entry.get())
+            if my_config.USER_ID == False or perm == -1:
                 self.error_label = tk.Label(self.frame, text="wrong password or email",
                                             fg=my_config.ERROR_FOREGROUND, bg=my_config.BACKGROUND)
                 self.error_label.grid(row=2, column=1)
@@ -171,8 +171,8 @@ class LoginWindow:
     def customer_app(self):
         self.frame.destroy()
         application = customer_window.CustomerApp(self.master)
-        application.initialize_main_menu()
+        application.initialize_main_buttons()
 
     def test_func(self):
-        all_users = db.get_all_customers()
+        all_users = db.get_all_orders()
         print(all_users)

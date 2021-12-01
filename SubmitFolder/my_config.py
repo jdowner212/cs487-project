@@ -2,6 +2,8 @@
 
 APP_NAME = "CS487"
 
+USER_ID = -1
+
 BACKGROUND = '#2E9F60'
 FOREGROUND = 'white'
 ERROR_FOREGROUND = 'red'

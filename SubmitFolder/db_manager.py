@@ -32,7 +32,6 @@ class appDB:
         id_customer    INTEGER NOT NULL,
         id_product     INTEGER NOT NULL,
         quantity       INTEGER NOT NULL,
-        total_price    DOUBLE  NOT NULL,
         order_date     TEXT    NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
         FOREIGN KEY (id_customer) REFERENCES Customers (id_customer) 
@@ -119,12 +118,12 @@ class appDB:
 
     def get_product(self, product_id):
         self.cur.execute(
-            """
-            SELECT id_product, product_name, product_price, stock
-            FROM Products
-            WHERE id_product=?
-            """,
-            (product_id,))
+        """
+        SELECT id_product, product_name, product_price, stock
+        FROM Products
+        WHERE id_product=?
+        """,
+        (product_id,))
         return self.cur.fetchone()
 
     def delete_product(self, product_id):
@@ -144,3 +143,45 @@ class appDB:
         self.cur.execute("""
         SELECT * FROM Products
         """)
+        
+    def add_order(self, id_customer, id_product, quantity):
+        self.cur.execute("""
+        INSERT INTO Orders
+        (id_customer, id_product, quantity)
+        VALUES (?, ?, ?)
+        """,(id_customer, id_product, quantity))
+        self.conn.commit()
+        
+    def get_customer_order(self, id_customer):
+        self.cur.execute("""
+        SELECT FROM Orders WHERE id_customer=?
+        """, (id_customer,))
+        self.cur.fetchall()
+
+    def get_all_orders(self):
+        self.cur.execute("""
+        SELECT * FROM Orders
+        """)
+        return self.cur.fetchall()
+
+    def get_product_price(self, product_id):
+        self.cur.execute("""
+        SELECT product_price FROM Products WHERE id_product=?
+        """, (product_id,))
+        return self.cur.fetchone()
+
+    def get_product_name(self, product_id):
+        self.cur.execute("""
+        SELECT product_name FROM Products WHERE id_product=?
+        """, (product_id,))
+        return self.cur.fetchone()
+
+    def get_all_orders_customer(self, customer_id):
+        self.cur.execute("""
+        SELECT * FROM Orders WHERE id_customer=?
+        """, (customer_id,))
+        return self.cur.fetchall()
+    
+    def remove_order(self, order_id):
+        self.cur.execute("DELETE FROM Orders WHERE id_order=?", (order_id,))
+        self.conn.commit()
