@@ -223,7 +223,7 @@ class CustomerApp:
             q = 0 if not quantity else np.float(quantity)
             total      = str(p*q)
             all_orders = db.get_all_orders_customer(my_config.USER_ID)
-            last_order = all_orders[-1][0]
+            last_order = len(all_orders)
             this_number = int(last_order) + 1
             if not name:
                 pass
