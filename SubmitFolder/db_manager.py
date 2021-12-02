@@ -1,8 +1,6 @@
 """DB transactions module"""
 import sqlite3
 
-# from db_manager import delete_customer
-
 # import my_config
 
 class appDB:

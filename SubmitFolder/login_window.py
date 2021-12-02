@@ -23,7 +23,6 @@ class LoginWindow:
         self.master.configure(bg=my_config.BACKGROUND)
         self.frame = tk.Frame(self.master, bg=my_config.BACKGROUND, bd=15)
 
-        # it contains error messages, for example not all entry are filled.
         self.error_label = tk.Label()
 
         # class entries
@@ -58,9 +57,7 @@ class LoginWindow:
         create_button = tk.Button(self.frame, text='test',
                                   bg=my_config.FOREGROUND, command=self.test_func, width=16)
         create_button.grid(row=5, column=1)
-        # create_button = tk.Button(self.frame, text='get user',
-        #                           bg=my_config.FOREGROUND, command=self.get_all_user, width=16)
-        # create_button.grid(row=6, column=1)
+
         self.frame.pack()
 
     def get_all_user(self):
