@@ -45,6 +45,12 @@ class CustomerApp:
 
         # it contains error messages, for example not all entry are filled.
         self.error_label      = tk.Label()
+
+        self.shopping_cart_table = None
+        self.product_tree     = None
+        self.my_orders_tree   = None
+        self.quantity_entry   = None
+        self.id_product_entry = None
         self.fg = my_config.FOREGROUND
         self.bg = my_config.BACKGROUND
         self.points = 100
@@ -102,8 +108,8 @@ class CustomerApp:
         button_edit.      grid(row=0,column=0, sticky=tk.N+tk.W,pady=(20,0))
         button_orders.    grid(row=1,column=0, sticky=tk.N+tk.W)
         button_check_out. grid(row=2,column=0, sticky=tk.N+tk.W)
-        button_logout.    grid(row=3,column=0, sticky=tk.N+tk.W)
-        button_account.   grid(row=4,column=0, sticky=tk.N+tk.W)
+        button_logout.    grid(row=4,column=0, sticky=tk.N+tk.W)
+        button_account.   grid(row=3,column=0, sticky=tk.N+tk.W)
 
 
 
@@ -140,7 +146,7 @@ class CustomerApp:
         self.quantity_entry.grid(  row=6, column=0, padx=100)
         # creating buttons
                 
-        order_button = tk.Button(  this_frame, text='Add to cart', bg=self.fg, command=self.add_to_cart(p,q), width=15)
+        order_button = tk.Button(this_frame, text='Add to cart', command=self.add_to_cart, bg=self.fg, width=15)
         order_button.grid(row=10, column=0, sticky = tk.W, pady=(10,0))
 
     def show_account(self):
@@ -159,20 +165,27 @@ class CustomerApp:
         page_title = tk.Label(frame_title, text='Account Information', font="{U.S. 101} 30 bold", bg=self.bg, fg=self.fg) 
         page_title.grid( row=0, column=0, sticky=tk.W,      pady=10)
         
-        info = db.get_customer_info(my_config.USER_ID)
-        [(cust_id,email,pw,name,phone,perm)] = info
-        if str(perm) == '0':
+        info = db.get_one_user(my_config.USER_ID) # info[5] is the permsion id (Int type)
+        # 0 - customer, 1 - employee, 2 - manager
+        if info[5] == 0:
             user_type = 'Customer'
-        elif str(perm) == '-1':
+        elif info[5] == 1:
             user_type = 'Employee'
-        else:
+        elif info[5] == 2:
             user_type = 'Manager'
+        else:
+            user_type = 'Error'
+
+        name = info[3]
+        email = info[1]
+        phone = info[4]
+        cust_id = info[0]
         
-        label_name      = tk.Label(frame_middle,bg=self.bg,fg=self.fg,text = 'Name', font="{U.S. 101} 15 bold")
-        label_email     = tk.Label(frame_middle,bg=self.bg,fg=self.fg,text = 'Email', font="{U.S. 101} 15 bold")
-        label_phone     = tk.Label(frame_middle,bg=self.bg,fg=self.fg,text = 'Phone', font="{U.S. 101} 15 bold")
-        label_user_type = tk.Label(frame_middle,bg=self.bg,fg=self.fg,text = 'User Type', font="{U.S. 101} 15 bold")
-        label_id        = tk.Label(frame_middle,bg=self.bg,fg=self.fg,text = 'User Id', font="{U.S. 101} 15 bold")
+        label_name      = tk.Label(frame_middle,bg=self.bg,fg=self.fg,text = 'Name: ', font="{U.S. 101} 15 bold")
+        label_email     = tk.Label(frame_middle,bg=self.bg,fg=self.fg,text = 'Email: ', font="{U.S. 101} 15 bold")
+        label_phone     = tk.Label(frame_middle,bg=self.bg,fg=self.fg,text = 'Phone: ', font="{U.S. 101} 15 bold")
+        label_user_type = tk.Label(frame_middle,bg=self.bg,fg=self.fg,text = 'User Type: ', font="{U.S. 101} 15 bold")
+        label_id        = tk.Label(frame_middle,bg=self.bg,fg=self.fg,text = 'User Id: ', font="{U.S. 101} 15 bold")
 
         label_name      .grid(row=0,column=0, sticky=tk.E, pady=(20,0))        
         label_email     .grid(row=1,column=0, sticky=tk.E)
@@ -200,48 +213,39 @@ class CustomerApp:
 
         
     def remove_from_cart(self):
+
         try:
-            if self.SC_table.selection():
-                item = self.SC_table.set(self.SC_table.selection())
-                self.SC_table.delete(item)
+            if self.shopping_cart_table.selection():
+                item = self.shopping_cart_table.set(self.shopping_cart_table.selection())
+                db.remove_order(item[('c1', 'c2', 'c3', 'c4')[0]])
+                # db.add_order(my_config.USER_ID, record[('c1', 'c2', 'c3', 'c4')[0]], 1)
+
         except KeyError:
             pass
+        
         self.initialize_main_buttons()
 
-    def add_to_cart(self, product_id, quantity):
-        self.chosen_q = quantity
-        self.chosen_p = product_id
+    def add_to_cart(self):
         try:
-            selected  = self.product_tree.selection()
-        
-           # try:
-            p_id      = product_id.get()
-            name      = db.get_product_name(p_id)
-            price     = db.get_product_price(p_id)
-            quantity  = quantity.get()
-            p = 0 if not price else np.float(price)
-            q = 0 if not quantity else np.float(quantity)
-            total      = str(p*q)
-            all_orders = db.get_all_orders_customer(my_config.USER_ID)
-            last_order = len(all_orders)
-            this_number = int(last_order) + 1
-            if not name:
-                pass
-            else:
-                self.SC_table.insert('', tk.END, values=[str(this_number), name, quantity, price])
-                
+            if self.product_tree.selection():
+                record = self.product_tree.set(self.product_tree.selection())
+                # print(record)
+                if db.get_product(record[('c1', 'c2', 'c3', 'c4')[0]])[3] < 1:
+                    messagebox.showinfo("Coffee Shop", 'Out of stock')
+                else:
+                    db.add_order(my_config.USER_ID, record[('c1', 'c2', 'c3', 'c4')[0]], 1)
+
         except KeyError:
             pass
-        
-        #self.initialize_main_buttons()
-        
+
+        self.initialize_main_buttons()
         
     def shopping_cart(self, this_frame, command_d):
         label_SC      = tk.Label(    this_frame, text = 'Shopping Cart', font="{U.S. 101} 15 bold", bg=self.bg, fg=self.fg) 
-        self.SC_table = ttk.Treeview(this_frame, column=("c1", "c2", "c3", "c4"), show='headings', height=5)
+        self.shopping_cart_table = ttk.Treeview(this_frame, column=("c1", "c2", "c3", "c4"), show='headings', height=5)
         
         label_SC.grid(     row=0,column=0, sticky = tk.W, pady = (10,0))
-        self.SC_table.grid(row=1,column=0, sticky = tk.W)
+        self.shopping_cart_table.grid(row=1,column=0, sticky = tk.W)
         
         R=2
         for (label,action) in command_d.items():
@@ -250,14 +254,14 @@ class CustomerApp:
             button.grid(row=R,column=0,sticky=tk.W,pady=p)
             R+=1
        
-        self.SC_table.column( "# 1",    anchor=tk.CENTER, width = 70)
-        self.SC_table.column( "# 2",    anchor=tk.CENTER, width = 150)
-        self.SC_table.column( "# 3",    anchor=tk.CENTER, width = 80)
-        self.SC_table.column( "# 4",    anchor=tk.CENTER, width = 80)
-        self.SC_table.heading("# 1",    text="Order")
-        self.SC_table.heading("# 2",    text="Product")
-        self.SC_table.heading("# 3",    text="Quantity")
-        self.SC_table.heading("# 4",    text="Price")
+        self.shopping_cart_table.column( "# 1",    anchor=tk.CENTER, width = 70)
+        self.shopping_cart_table.column( "# 2",    anchor=tk.CENTER, width = 150)
+        self.shopping_cart_table.column( "# 3",    anchor=tk.CENTER, width = 80)
+        self.shopping_cart_table.column( "# 4",    anchor=tk.CENTER, width = 80)
+        self.shopping_cart_table.heading("# 1",    text="Order")
+        self.shopping_cart_table.heading("# 2",    text="Product")
+        self.shopping_cart_table.heading("# 3",    text="Quantity")
+        self.shopping_cart_table.heading("# 4",    text="Price")
 
                 
         cart = db.get_all_orders_customer(my_config.USER_ID)
@@ -265,7 +269,7 @@ class CustomerApp:
         for item in cart:
             items_in_cart.append([item[0], db.get_product_name(item[2])[0], 1, db.get_product_price(item[2])[0]])
         for item in items_in_cart:
-            self.SC_table.insert('', tk.END, values=item)
+            self.shopping_cart_table.insert('', tk.END, values=item)
 
         #frame.pack() 
 
@@ -273,7 +277,7 @@ class CustomerApp:
     def place_order(self):
 #         """Place new order, if all required entries are filled."""
         
-        selected = self.SC_table.selection()
+        selected = self.shopping_cart_table.selection()
         try:
 #            self.id_product.entry = selected[
             p, q = selected[1,2]

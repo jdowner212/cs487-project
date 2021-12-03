@@ -19,7 +19,7 @@ class LoginWindow:
         """Creates login window."""
         self.master = master
         self.master.title(my_config.APP_NAME)
-        self.master.geometry(LOGIN_WINDOW_SIZE)
+        self.master.geometry("300x250")
         self.master.configure(bg=my_config.BACKGROUND)
         self.frame = tk.Frame(self.master, bg=my_config.BACKGROUND, bd=15)
 
@@ -59,11 +59,11 @@ class LoginWindow:
         create_button = tk.Button(self.frame, text='Create new account',
                                   bg=my_config.FOREGROUND, command=self.create_account, width=16)
         create_button.grid(row=4, column=1)
-        create_button = tk.Button(self.frame, text='test',
-                                  bg=my_config.FOREGROUND, command=self.test_func, width=16)
+        create_button = tk.Button(self.frame, text='Exit',
+                                  bg=my_config.FOREGROUND, command=self.quit, width=16)
         create_button.grid(row=5, column=1)
-        # create_button = tk.Button(self.frame, text='get user',
-        #                           bg=my_config.FOREGROUND, command=self.get_all_user, width=16)
+        # create_button = tk.Button(self.frame, text='test',
+        #                           bg=my_config.FOREGROUND, command=self.test_func, width=16)
         # create_button.grid(row=6, column=1)
         self.frame.pack()
 
@@ -211,3 +211,6 @@ class LoginWindow:
     def test_func(self):
         all_users = db.get_all_orders()
         print(all_users)
+
+    def quit(self):
+        self.master.destroy()

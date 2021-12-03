@@ -1,6 +1,7 @@
 """DB transactions module"""
 import sqlite3
 
+# import my_config
 
 class appDB:
     def __init__(self, db):
@@ -78,45 +79,6 @@ class appDB:
         rows = self.cur.fetchall()
         return rows
 
-    def get_customer_id(self, email):
-        # if login success returns user id and user perm
-        self.cur.execute("""
-        SELECT id_customer
-        FROM Customers
-        WHERE email=?
-        """, (email)
-        )
-        found = self.cur.fetchone()
-        if found is None:
-            return None
-        else:
-            return found[0],found[1]
-        
-    def get_customer_name(self, email):
-        # if login success returns user id and user perm
-        self.cur.execute("""
-        SELECT id_customer
-        FROM Customers
-        WHERE email=?
-        """, (email)
-        )
-        found = self.cur.fetchone()
-        if found is None:
-            return None
-        else:
-            return found[0],found[1]
-
-    def get_customer_info(self, id_customer):
-        # if login success returns user id and user perm
-        self.cur.execute("""
-        SELECT id_customer, email, password, full_name, phone, perm
-        FROM Customers
-        WHERE id_customer=?
-        """, (id_customer,)
-        )
-        return self.cur.fetchall()
-
-    
     def get_user_perm(self, email, password):
         # if login success returns user id and user perm
         self.cur.execute("""
@@ -130,21 +92,7 @@ class appDB:
             return False, -1
         else:
             return found[0], found[1]
-        
-    def get_user_password(self, email):
-        # if login success returns user id and user perm
-        self.cur.execute("""
-        SELECT password
-        FROM Customers
-        WHERE email=?
-        """, (email,)
-        )
-        found = self.cur.fetchone()
-        if found is None:
-            return False#, -1
-        else:
-            return found[0]#, found[1]
-        
+
     def get_all_products(self):
         self.cur.execute("""
         SELECT id_product, product_name, product_price, stock 
@@ -168,35 +116,26 @@ class appDB:
         """, (name, price, stock))
         self.conn.commit()
 
-    def get_product(self, id_product):
+    def get_product(self, product_id):
         self.cur.execute(
         """
         SELECT id_product, product_name, product_price, stock
         FROM Products
         WHERE id_product=?
         """,
-        (id_product,))
+        (product_id,))
         return self.cur.fetchone()
 
-    def delete_product(self, id_product):
-        self.cur.execute("DELETE FROM Products WHERE id_product=?", (id_product,))
+    def delete_product(self, product_id):
+        self.cur.execute("DELETE FROM Products WHERE id_product=?", (product_id,))
         self.conn.commit()
 
-    def update_product(self, id_product, name, price, stock):
+    def update_product(self, product_id, name, price, stock):
         self.cur.execute("""
         UPDATE Products
         SET product_name=?, product_price=?, stock=?
         WHERE id_product=?
-        """, (name, price, stock, id_product)
-        )
-        self.conn.commit()
-
-    def update_customer(self, id_customer, password, full_name, email, phone):
-        self.cur.execute("""
-        UPDATE Customers
-        SET password=?, full_name=?, email=?, phone=?
-        WHERE id_customer=?
-        """, (password, full_name, email, phone, id_customer,)# price, stock, id_product)
+        """, (name, price, stock, product_id)
         )
         self.conn.commit()
 
@@ -206,41 +145,38 @@ class appDB:
         """)
         
     def add_order(self, id_customer, id_product, quantity):
-        self.cur.execute("""
-        INSERT INTO Orders
-        (id_customer, id_product, quantity)
-        VALUES (?, ?, ?)
-        """,(id_customer, id_product, quantity))
-        self.conn.commit()
+        product_stock = self.get_product(id_product)[3]
+        if product_stock > 0:
+            self.remove_one_product(id_product, (product_stock-1))
+            self.cur.execute("""
+            INSERT INTO Orders
+            (id_customer, id_product, quantity)
+            VALUES (?, ?, ?)
+            """,(id_customer, id_product, quantity))
+            self.conn.commit()
         
     def get_customer_order(self, id_customer):
         self.cur.execute("""
-        SELECT * FROM Orders WHERE id_customer=?
+        SELECT FROM Orders WHERE id_customer=?
         """, (id_customer,))
         self.cur.fetchall()
-        
-    def get_this_order(self, id_customer, id_product):
-        self.cur.execute("""
-        SELECT * FROM Orders WHERE id_customer=? AND id_product=?
-        """, (id_customer,id_product))
-        self.cur.fetchall()
-        
+
     def get_all_orders(self):
         self.cur.execute("""
         SELECT * FROM Orders
         """)
         return self.cur.fetchall()
 
-    def get_product_price(self, id_product):
+    def get_product_price(self, product_id):
         self.cur.execute("""
         SELECT product_price FROM Products WHERE id_product=?
-        """, (id_product,))
+        """, (product_id,))
         return self.cur.fetchone()
 
-    def get_product_name(self, id_product):
+    def get_product_name(self, product_id):
         self.cur.execute("""
         SELECT product_name FROM Products WHERE id_product=?
-        """, (id_product,))
+        """, (product_id,))
         return self.cur.fetchone()
 
     def get_all_orders_customer(self, customer_id):
@@ -250,5 +186,49 @@ class appDB:
         return self.cur.fetchall()
     
     def remove_order(self, order_id):
+        remove_order = self.get_one_order(order_id)
+        remove_product = self.get_product(remove_order[2])
+        product_stock = self.get_product(remove_order[2])[3]
+        self.update_product(remove_product[0], remove_product[1], remove_product[2], product_stock+1)
         self.cur.execute("DELETE FROM Orders WHERE id_order=?", (order_id,))
         self.conn.commit()
+    
+    def remove_one_product(self, product_id, stock):
+        self.cur.execute("""
+        UPDATE Products
+        SET stock=?
+        WHERE id_product=?
+        """, (stock, product_id,))
+        self.conn.commit()
+
+    def get_one_order(self, order_id):
+        self.cur.execute("""
+        SELECT * FROM Orders WHERE id_order=?
+        """, (order_id, ))
+        return self.cur.fetchone()
+
+    def get_one_user(self, user_id):
+        self.cur.execute("""
+        SELECT * FROM Customers WHERE id_customer=?
+        """, (user_id,))
+        return self.cur.fetchone()
+    
+    def delete_customer(self, user_id):
+        self.cur.execute("""
+        DELETE FROM Customers WHERE id_customer=?
+        """, (user_id,))
+        self.conn.commit()
+
+    def update_user(self, user_id, email, password, full_name, phone):
+        self.cur.execute("""
+        UPDATE Customers
+        SET email=?, password=?, full_name=?, phone=?
+        WHERE id_customer=?
+        """, (email, password, full_name, phone, user_id))
+        self.conn.commit()
+
+    def get_user_email(self, email):
+        self.cur.execute("""
+        SELECT * FROM Customers WHERE email=?
+        """, (email,))
+        return self.cur.fetchone()
